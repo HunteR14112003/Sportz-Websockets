@@ -1,13 +1,9 @@
 import { z } from 'zod';
 
 // ISO date string validator - reusable for any date validation
-export const isoDateString = z
-  .string()
-  .refine(
-    (value) => !isNaN(Date.parse(value)),
-    'Must be a valid ISO date string'
-  );
-
+export const isoDateString = z.iso.datetime({
+  message: 'Must be a valid ISO date string',
+});
 // Match ID parameter schema - validates URL params
 export const matchIdParamSchema = z.object({
   id: z.coerce
@@ -48,18 +44,8 @@ export const createMatchSchema = z
       .string()
       .min(1, 'Away team cannot be empty')
       .trim(),
-    startTime: z
-      .string()
-      .refine(
-        (value) => !isNaN(Date.parse(value)),
-        'Start time must be a valid ISO date string'
-      ),
-    endTime: z
-      .string()
-      .refine(
-        (value) => !isNaN(Date.parse(value)),
-        'End time must be a valid ISO date string'
-      ),
+    startTime: isoDateString,
+    endTime: isoDateString,
     homeScore: z.coerce
       .number()
       .int('Home score must be an integer')
